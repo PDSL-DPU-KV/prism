@@ -47,6 +47,7 @@ ValueStorage::ValueStorage(const char *path, int vs_num) {
     ts_trace(TS_INFO, "CREATED_VALUESTORAGE: %d\n", vs_id);
 
     if((fd[0] = open(path, O_RDWR | O_CREAT | O_DIRECT | O_NOATIME, 0666)) < 0) {
+    printf("%s\n",path);
 	perror("file open failed\n");
 	exit(EXIT_FAILURE);
     }

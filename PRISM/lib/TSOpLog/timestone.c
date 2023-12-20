@@ -19,7 +19,7 @@
 #include "qp.h"
 #include "isolation.h"
 #include "recovery.h"
-
+#include <stdio.h>//ljh
 static unsigned long __g_gen_id;
 static ts_recovery_t __g_recovery;
 
@@ -55,6 +55,10 @@ int __init ts_init(ts_conf_t *conf)
 
 	/* Init */
 	init_clock();
+    if(align_size_t_to_pmem_page(conf->nvheap_size) == 0) {
+		ts_trace(TS_ERROR, "fuck\n");
+        exit(1);
+    }
 	nvm_root_obj =
 		nvm_init_heap(conf->nvheap_path,
 			      align_size_t_to_pmem_page(conf->nvheap_size),

@@ -2,7 +2,7 @@
 #define _MTS_CONFIG_H
 #include "arch.h"
 
-#define MTS_THREAD_NUM 32
+#define MTS_THREAD_NUM 16
 #define KV_SIZE 1024UL
 #define SECTOR_SIZE 512UL 
 
@@ -12,15 +12,15 @@
 /* HSIT */
 #define MTS_AT_NUM MTS_THREAD_NUM
 /* Set to the same value as the number of prism thread*/
-#define MTS_AT_PATH "/mnt/pmem"
-#define MTS_AT_G_SIZE (1024UL * 1024UL * 1024UL * 1UL * MTS_AT_NUM)
+#define MTS_AT_PATH "/mnt/pmem0"
+#define MTS_AT_G_SIZE (1024UL * 1024UL * 1024UL * 1UL * MTS_AT_NUM) //#define MTS_AT_G_SIZE (1024UL * 1024UL * 1024UL * 1UL * MTS_AT_NUM)
 #define MTS_AT_SIZE (MTS_AT_G_SIZE / MTS_AT_NUM)
 #define MTS_AT_ENTRY_SIZE sizeof(at_entry_t)
 #define MTS_AT_ENTRY_NUM (MTS_AT_SIZE / MTS_AT_ENTRY_SIZE)
 
 /* PWB */
 #define MTS_OPLOG_NUM MTS_THREAD_NUM
-#define NVHEAP_POOL_PATH "/mnt/pmem"
+#define NVHEAP_POOL_PATH "/mnt/pmem0"
 #define NVHEAP_POOL_SIZE (MTS_OPLOG_G_SIZE / MTS_THREAD_NUM * 4UL)
 #define MTS_OPLOG_G_SIZE (16UL * 1024UL * 1024UL * 1024UL)
 #define MTS_OPLOG_SIZE (MTS_OPLOG_G_SIZE / MTS_OPLOG_NUM / 2UL)
@@ -31,11 +31,11 @@
 
 /* Value Storage */
 #define MTS_VS_NUM 8
-#define MTS_VS_PATH "/mnt/hpt"
+#define MTS_VS_PATH "/home/ljh/test_prism" // ljh change
 #define MTS_VS_DISK_NUM 8
 #define MTS_VS_ENTRY_SIZE sizeof(vs_entry_t)
 #define MTS_VS_ENTRIES_PER_CHUNK (MTS_VS_CHUNK_SIZE / MTS_VS_ENTRY_SIZE) 
-#define MTS_VS_G_SIZE (MTS_VS_NUM * 512UL * 1024UL * 1024UL * 1024UL)
+#define MTS_VS_G_SIZE (MTS_VS_NUM * 40UL * 1024UL * 1024UL * 1024UL)
 #define MTS_VS_SIZE (MTS_VS_G_SIZE / MTS_VS_NUM)
 #define MTS_VS_CHUNK_SIZE (512UL * 1024UL)
 /* w/ io_uring, 512KB is the best size 128KB * QD(4) */
@@ -48,7 +48,7 @@
 
 /* io_uring */
 #define W_QD 4
-#define R_QD 64
+#define R_QD 100
 #define GC_QD 8
 #define IO_URING_WRITE	    1
 #define IO_URING_READ	    1
@@ -57,7 +57,7 @@
 #define IO_URING_WRING_NUM MTS_THREAD_NUM
 #define IO_URING_RRING_NUM MTS_THREAD_NUM
 #define IO_URING_SRING_NUM MTS_THREAD_NUM
-#define IO_COMPLETER_NUM 8
+#define IO_COMPLETER_NUM 4
 
 /* DRAM Cache */
 #define MTS_DRAMCACHE 1

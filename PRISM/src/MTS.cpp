@@ -413,24 +413,26 @@ MTSImpl::MTSImpl(int numNuma) {
     }
 
     for (int i = 0; i < MTS_OPLOG_NUM; i++) {
-	if(i < (MTS_OPLOG_NUM / 2))
-	    sprintf(path, NVHEAP_POOL_PATH"0/prism/pwb%d", i);
-	else sprintf(path, NVHEAP_POOL_PATH"1/prism/pwb%d", i);
+//	if(i < (MTS_OPLOG_NUM / 2)) ljh change
+	    sprintf(path, NVHEAP_POOL_PATH"/ljh/prism/pwb%d", i);//ljh change
+//	else sprintf(path, NVHEAP_POOL_PATH"1/prism/pwb%d", i); // ljh change only in one pmem
 	g_perNumaOpLog[i] = MTSImpl::createOpLog(path, i);
 	ts_trace(TS_INFO, "[PRISMImpl] Create PWB %d\n", i);
     }
 
     for (int i = 0; i < MTS_AT_NUM; i++) {
-	if(i < (MTS_AT_NUM / 2))
-	    sprintf(path, MTS_AT_PATH"0/prism/hsit%d", i);
-	else sprintf(path, MTS_AT_PATH"1/prism/hsit%d", i);
+// 	if(i < (MTS_AT_NUM / 2)) ljh change
+	    sprintf(path, MTS_AT_PATH"/ljh/prism/hsit%d", i);
+//	else sprintf(path, MTS_AT_PATH"1/prism/hsit%d", i); ljh change
 	g_perNumaAddressTable[i] = MTSImpl::createAddressTable(path, i);
 	ts_trace(TS_INFO, "[PRISMImpl] Create HIST %d\n", i);
     }
 
     for(int i = 0; i < MTS_VS_NUM; i++) {
 	int partition = i % MTS_VS_DISK_NUM;
-	sprintf(path, MTS_VS_PATH"%d/prism/valuestorage%d", partition, i);
+//	sprintf(path, MTS_VS_PATH"%d/prism/valuestorage%d", partition, i); ljh change
+	sprintf(path, MTS_VS_PATH"%d/valuestorage%d", partition, i);
+
 	g_perNumaValueStorage[i] = MTSImpl::createValueStorage(path, i);
 	ts_trace(TS_INFO, "[PRISMImpl] Create ValueStorage %d\n", g_perNumaValueStorage[i]->get_vs_id());
 
@@ -670,6 +672,7 @@ bool MTSImpl::update(Key_t &key, Val_t val) {
 }
 
 Val_t MTSImpl::lookup(Key_t &key) {
+//    std::cout<<"ljh start lookup in MTS.cpp\n";
     ctInitialized = true;
     ioc_lookup = true;
     iocInitialized = true;
@@ -687,7 +690,7 @@ Val_t MTSImpl::lookup(Key_t &key) {
 
     KeyIndex &keyindex = *g_perNumaKeyIndex[0];
     at_entry_t *at_entry = (at_entry_t *)keyindex.lookup(key);
-
+//        std::cout<<"ljh end lookup in keyindex\n";
     if((uintptr_t)at_entry == 0x0) {
 	ts_trace(TS_ERROR, "[LOOKUP] keyindex.lookup returns non-exist key :%lu\n", key);
 	return 0;
@@ -698,7 +701,7 @@ Val_t MTSImpl::lookup(Key_t &key) {
     int val_pos;
 RETRY_LOOKUP:
     val_pos = get_val_pos(at_entry, &vs_id);
-
+//    std::cout<<"ljh val_pos"<<val_pos<<"\n";
     switch(val_pos) {
 	case DCACHE_VAL:
 	    {
@@ -738,8 +741,13 @@ RETRY_LOOKUP:
 	    }
 	case VALUESTORAGE_VAL: 
 	    {
+//        std::cout<<"valuest look up ljh statt\n";
+//        printf("ljh V lookup vs_id %lu key %lu %p\n", vs_id, key, at_entry);
 		ts_trace(TS_INFO, "V lookup vs_id %lu key %lu %p\n", vs_id, key, at_entry);
 		ValueStorage *vs = g_perNumaValueStorage[vs_id];
+        if(vs==nullptr) {
+            printf("ljh no\n");
+        }
 #ifdef MTS_STATS_LATENCY
 		at_entry->timestamp = start;
 #endif
@@ -747,7 +755,9 @@ RETRY_LOOKUP:
 		int batched = 0;
 		int ring_idx = 0;
 		aio_thread_state_t *cur_th_state = th_state[curThreadId];
+//        printf("ljh apply_ops\n");
 		batched = apply_ops(object_combiner[vs_id][ring_idx], cur_th_state, batching_io, at_entry, vs, ring_idx);
+//        printf("ljh end apply_ops\n");
 		return 0;
 	    }
 	default:

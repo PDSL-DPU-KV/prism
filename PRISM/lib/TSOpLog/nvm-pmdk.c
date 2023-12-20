@@ -4,7 +4,7 @@
 #include "debug.h"
 #include "port.h"
 #include "nvm.h"
-
+#include<stdio.h>
 static PMEMobjpool *__g_pop;
 
 ts_nvm_root_obj_t *nvm_load_heap(const char *path, size_t sz, int *is_created)
@@ -18,10 +18,16 @@ ts_nvm_root_obj_t *nvm_load_heap(const char *path, size_t sz, int *is_created)
 
     /* Open a nvm heap */
     if (access(path, F_OK) != 0) {
-	__g_pop =
+    //ljh change
+    if(sz==0) {
+        printf("no\n");
+    }
+//    sz = sz<PMEMOBJ_MIN_POOL?PMEMOBJ_MIN_POOL:sz;
+    __g_pop =
 	    pmemobj_create(path, POBJ_LAYOUT_NAME(nvlog), sz, 0666);
-	ts_trace(TS_INFO, "pmemobj_create\n");
+    ts_trace(TS_INFO, "pmemobj_create\n");
 	if (unlikely(!__g_pop)) {
+        printf("%s %lld\n",path,sz);
 	    ts_trace(TS_ERROR, "failed to create pool\n");
 	    return NULL;
 	}

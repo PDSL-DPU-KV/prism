@@ -1,0 +1,5 @@
+### Loading workload file ==================================================
+Number of threads: 32
+Loaded 10000001 keys
+YCSB-E scan Avg length: 1; Variance: 0
+Populating 10000001 keys using 32 threads

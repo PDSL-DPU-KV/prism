@@ -263,7 +263,7 @@ inline void exec(int wl,
 		       idx->insert(init_keys[i], values[i], ti);
 		       //periodic_count(1000, "load_thread_id %d %lu%%", thread_id, i*100LU/end_index);
 		   } 
-
+//            std::cout<<"end insert\n";
 		   return;
 	       };
 
@@ -283,7 +283,7 @@ inline void exec(int wl,
     delete idx;
     return;
   }
-  sleep(1);
+  sleep(2);
   //---------------------------------------------------------------------------------------------------
 
   //CACHE WARM-UP--------------------------------------------------------------------------------------
@@ -299,12 +299,16 @@ inline void exec(int wl,
 		   int gc_counter = 0;
 		   std::vector<uint64_t> v;
 		   v.reserve(10);
+//           std::cout<<"start_ljh<<warm_up\n";
 		   for(size_t i = start_index;i < end_index;i++) {
+//            std::cout<<i<<"\n";
 		       v.clear();
 		       idx->find(init_keys[i], &v, ti);
 		   } 
+//           std::cout<<"end_ljh<<warm_up\n";
 		   return;
 	       };
+//    std::cout<<"whereis_ljh"<<"\n";
   StartThreads(idx, num_thread, func3, false);
   sleep(1);
 #endif
@@ -344,7 +348,7 @@ inline void exec(int wl,
     size_t temp_time = get_now();
     size_t current_thp = 0;
     int op_cnt= 0;
-
+//    std::cout<<"start scan ljh\n";
     //declare_periodic_count;
     for(size_t i = start_index;i < end_index;i++) {
 	int op = ops[i];
@@ -365,6 +369,7 @@ inline void exec(int wl,
 
 	//periodic_count(1000, "thread_id %d", thread_id);
     }
+//    std::cout<<"end scan ljh\n";
     return;
   };
 
@@ -500,18 +505,18 @@ int main(int argc, char *argv[]) {
   std::vector<uint64_t> values;
   std::vector<int> ranges;
   std::vector<int> ops; //INSERT = 0, READ = 1, UPDATE = 2
+  const int num_keys = 100000005; //ljh change 
+  init_keys.reserve(num_keys);
+  keys.reserve(num_keys);
+  values.reserve(num_keys);
+  ranges.reserve(num_keys);
+  ops.reserve(num_keys);
 
-  init_keys.reserve(100000000);
-  keys.reserve(100000000);
-  values.reserve(100000000);
-  ranges.reserve(100000000);
-  ops.reserve(100000000);
-
-  memset(&init_keys[0], 0x00, 100000000 * sizeof(keytype));
-  memset(&keys[0], 0x00, 100000000 * sizeof(keytype));
-  memset(&values[0], 0x00, 100000000 * sizeof(uint64_t));
-  memset(&ranges[0], 0x00, 100000000 * sizeof(int));
-  memset(&ops[0], 0x00, 100000000 * sizeof(int));
+  memset(&init_keys[0], 0x00, num_keys * sizeof(keytype));
+  memset(&keys[0], 0x00, num_keys * sizeof(keytype));
+  memset(&values[0], 0x00, num_keys * sizeof(uint64_t));
+  memset(&ranges[0], 0x00, num_keys * sizeof(int));
+  memset(&ops[0], 0x00, num_keys * sizeof(int));
 
   load(wl, kt, index_type, init_keys, keys, values, ranges, ops);
   //printf("Finished loading workload file\n");

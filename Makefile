@@ -1,7 +1,8 @@
 CC = gcc 
-CXX = g++ -std=c++17
+CXX = g++-11 -std=c++17
+
 MEMMGR = -lpmem -lpmemobj -ljemalloc 
-CFLAGS = -g -O3 -Wno-all -Wno-invalid-offsetof -mcx16 -DNDEBUG -DBWTREE_NODEBUG -include masstree/config.h -latomic -luring -ltcmalloc
+CFLAGS = -g -O3 -Wno-all -Wno-invalid-offsetof -mcx16 -DNDEBUG -DBWTREE_NODEBUG -include masstree/config.h  -luring -latomic  -ltcmalloc
 SNAPPY = /usr/lib/libsnappy.so.1.3.0
 all: workload
 run_all: workload
@@ -18,18 +19,18 @@ masstree/mtIndexAPI.a:
 	(cd masstree && ./configure && make)
 
 bwtree.o: ./BwTree/bwtree.h ./BwTree/bwtree.cpp libs
-	        $(CXX) $(CFLAGS) -c -o bwtree.o ./BwTree/bwtree.cpp
+	        $(CXX) $(CFLAGS) -c -o bwtree.o ./BwTree/bwtree.cpp -luring
 
 workload.o: workload.cpp microbench.h index.h util.h ./papi_util.cpp ./PRISM/include/MTS.h ./BwTree/bwtree.h ./masstree/mtIndexAPI.hh
-	$(CXX) $(CFLAGS) -I ./PRISM/include/ -I ./PRISM/src/ -c -o workload.o workload.cpp -I ./PRISM/lib/pactree/include/
+	$(CXX) $(CFLAGS) -I ./PRISM/include/ -I ./PRISM/src/ -c -o workload.o workload.cpp -I ./PRISM/lib/pactree/include/ -luring
 
 
 workload: workload.o bwtree.o ./masstree/mtIndexAPI.a PRISM/libMTS.a
-	$(CXX) $(CFLAGS) -o workload workload.o bwtree.o masstree/mtIndexAPI.a ./PRISM/libMTS.a ./PRISM/libtsoplog.a ./PRISM/libpactree.a ./PRISM/libpdlart.a $(MEMMGR) -lpthread -lm -ltbb -lnuma -latomic
+	$(CXX) $(CFLAGS) -o workload workload.o bwtree.o masstree/mtIndexAPI.a ./PRISM/libMTS.a ./PRISM/libtsoplog.a ./PRISM/libpactree.a ./PRISM/libpdlart.a $(MEMMGR) -lpthread -lm -ltbb -lnuma -latomic -luring
 
 
 clean:
-	(bash ./clear_prism.sh)
+	(bash ./my_clear_prism.sh)
 	(cd ycsb_generator && make clean)
 	(cd ycsb_generator/figure8 && make clean)
 	(cd masstree && make clean)

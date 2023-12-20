@@ -124,7 +124,7 @@ class PMem {
 			if (access(nvm_path, F_OK) != 0) {
 				pop = pmemobj_create(nvm_path, POBJ_LAYOUT_NAME(nv), size, 0666);
 				if(pop == nullptr){
-					std::cerr<<"bind create error"<<std::endl;	
+					std::cerr<<"bind create error!"<<nvm_path<<std::endl;	
 					return false;
 				}
 				baseAddresses[poolId*3+2] = reinterpret_cast<void*>(pop);

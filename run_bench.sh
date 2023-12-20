@@ -19,7 +19,7 @@ WORKLOAD_DST="${ROOT_DIR}/workloads"
 THROUGHPUT_OUTPUT="${CURRENT_DIR}/throughput.txt"   #Results(throughput) are written in this file.
 INSERT_OUTPUT="${CURRENT_DIR}/insert.txt"	    #Results(insert throughput) are recorded in this file.
 
-KEY_TYPE=(zipf)		    #"rand": skewed, "mono": uniformed.
+KEY_TYPE=(zipf)	    #"rand": skewed, "mono": uniformed.
 WORKLOAD_TYPE=(a b c d e)   #Typing which workload_type will be tested.
 CORE_NUM=(40)		    #how many CPU cores?    ##PRISM threads: CPU cores / 5 * 4 ##IO Completion threads: CPU cores * 5
 ZIPF=("0.99")		    #Zipfian coefficient

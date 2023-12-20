@@ -186,22 +186,27 @@ void pactreeImpl::createCombinerThread() {
 }
 
 pactreeImpl *initPT(int numa){
-    const char* path = "/mnt/pmem0/dl";
-    size_t sz = 64UL*1024UL*1024UL*1024UL; //10GB
+//    const char* path = "/mnt/pmem0/dl"; ljh change
+    const char* path = "/mnt/pmem0/ljh/dl";
+
+//    size_t sz = 64UL*1024UL*1024UL*1024UL; //10GB 
+    size_t sz =  6UL*1024UL*1024UL*1024UL;//ljh change 10G
     int isCreated = 0;
     int isCreated2 = 0;
     root_obj* root = nullptr;
     root_obj* sl_root = nullptr;
-
-   const char *sl_path = "/mnt/pmem0/sl";
-   size_t sl_size = 64UL*1024UL*1024UL*1024UL;
-
+    
+//    const char *sl_path = "/mnt/pmem0/sl"; ljh change
+    const char *sl_path = "/mnt/pmem0/ljh/sl";
+//  size_t sl_size = 64UL*1024UL*1024UL*1024UL;
+    size_t sl_size = 6UL*1024UL*1024UL*1024UL;//ljh change 10G
    PMem::bind(0,sl_path,sl_size,(void **)&sl_root,&isCreated);
     if (isCreated == 0) {
         printf("Reading Search layer from an existing pactree.\n");
 	
     }
-    const char* log_path = "/mnt/pmem0/log";
+//    const char* log_path = "/mnt/pmem0/log"; ljh change 
+    const char* log_path = "/mnt/pmem0/ljh/log";
     PMem::bindLog(0,log_path,sz);
 
     PMem::bind(1,path,sz,(void **)&root,&isCreated2);
@@ -377,7 +382,7 @@ bool pactreeImpl::update(Key_t &key, Val_t val) {
 }
 
 Val_t pactreeImpl::lookup(Key_t &key) {
-
+//    std::cout<<"ljh start lookup in pactree\n";
     uint64_t clock = ordo_get_clock();
     curThreadData->read_lock(clock);
     Val_t val = 0;

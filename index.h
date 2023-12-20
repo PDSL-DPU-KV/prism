@@ -102,7 +102,7 @@ class MTSIndex : public Index<KeyType, KeyComparator>
   }
 
   void merge() {}
-
+//ljh 可能要改为2
   MTSIndex(uint64_t kt) : idx(2){
 
   }

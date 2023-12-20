@@ -6,7 +6,7 @@
 
 int apply_ops(aio_struct_t *l, aio_thread_state_t *st_thread, at_entry_t *(*sfunc)(at_entry_t *, std::vector<at_entry_t *> *),
 	at_entry_t *at_entry, ValueStorage *valuestorage, int ring_idx) {
-
+        printf("start apply_ops in AIO\n");
     std::vector<at_entry_t *> *dst_at_entry_vec = valuestorage->dst_at_entry_vec[ring_idx];
     std::vector<at_entry_t *> *src_at_entry_vec = valuestorage->src_at_entry_vec[ring_idx];
 
@@ -36,6 +36,7 @@ int apply_ops(aio_struct_t *l, aio_thread_state_t *st_thread, at_entry_t *(*sfun
 
     do {
 	while((p->next != nullptr) && (counter < help_bound)) {
+        printf("start apply_ops in AIO\n");
 	    StorePrefetch(p->next);
 	    counter++;
 	    ts_trace(TS_INFO, "apply_ops | %p \n", p->tmp);
@@ -56,7 +57,7 @@ valuestorage->get_val_ccsync(src_at_entry_vec, ring_idx);
 NonTSOFence();
 p->locked = false; // Unlock the next one
 StoreFence();
-
+printf("EN apply_ops in AIO\n");
 return counter;
 }
 

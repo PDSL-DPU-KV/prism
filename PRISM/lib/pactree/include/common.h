@@ -9,7 +9,8 @@
 #include <cassert>
 #include <iostream>
 #include <libpmemobj.h>
-#define MULTIPOOL
+//ljh change only one multipool
+//#define MULTIPOOL
 #define MAX_NUMA 2
 //#define STRINGKEY
 #define WORKER_THREAD_PER_NUMA 1
